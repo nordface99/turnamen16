@@ -21,9 +21,19 @@ input[type="text"] {
   font-size: 14px;
 }
 
-#bracket {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+.match {
+  margin: 10px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.match span {
+  display: block;
+  padding: 5px;
+}
+
+.match span:hover {
+  background: #d0f0d0;
 }
