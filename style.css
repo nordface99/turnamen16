@@ -1,39 +1,74 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f0f0;
-  padding: 20px;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const teamForm = document.getElementById("teamForm");
+  const teamInputs = document.getElementById("teamInputs");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const scoreFormContainer = document.getElementById("scoreFormContainer");
+  const scoreForm = document.getElementById("scoreForm");
+  const bracketContainer = document.getElementById("bracketContainer");
 
-h1, h2 {
-  text-align: center;
-}
+  // Buat 16 input tim
+  for (let i = 0; i < 16; i++) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = `Tim ${i + 1}`;
+    input.required = true;
+    teamInputs.appendChild(input);
+  }
 
-#teamInputs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  max-width: 400px;
-  margin: 20px auto;
-}
+  // Tombol Shuffle
+  shuffleBtn.addEventListener("click", () => {
+    const inputs = Array.from(teamInputs.querySelectorAll("input"));
+    const values = inputs.map(input => input.value);
+    const shuffled = values.sort(() => Math.random() - 0.5);
+    inputs.forEach((input, i) => input.value = shuffled[i]);
+  });
 
-input[type="text"] {
-  padding: 8px;
-  font-size: 14px;
-}
+  // Tombol Confirm
+  teamForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const teams = Array.from(teamInputs.querySelectorAll("input")).map(input => input.value);
+    const teamPairs = [];
+    for (let i = 0; i < teams.length; i += 2) {
+      teamPairs.push([teams[i], teams[i + 1]]);
+    }
 
-.buttons {
-  text-align: center;
-  margin-top: 10px;
-}
+    teamForm.style.display = "none";
+    scoreFormContainer.style.display = "block";
 
-button {
-  padding: 8px 16px;
-  margin: 5px;
-  font-size: 14px;
-  cursor: pointer;
-}
+    // Buat form skor
+    scoreForm.innerHTML = "";
+    const scoreInputs = [];
 
-#bracket {
-  margin: 30px auto;
-  width: 900px;
-}
+    teamPairs.forEach((pair, index) => {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <label>${pair[0]}: <input type="number" min="0" required></label>
+        <label>${pair[1]}: <input type="number" min="0" required></label>
+      `;
+      scoreForm.appendChild(div);
+      scoreInputs.push(div.querySelectorAll("input"));
+    });
+
+    const submitScores = document.createElement("button");
+    submitScores.textContent = "Submit Skor";
+    scoreForm.appendChild(submitScores);
+
+    scoreForm.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      const results = scoreInputs.map(pair => [
+        parseInt(pair[0].value),
+        parseInt(pair[1].value)
+      ]);
+
+      scoreFormContainer.style.display = "none";
+      bracketContainer.style.display = "block";
+
+      $('#bracket').bracket({
+        init: {
+          teams: teamPairs,
+          results: [results]
+        }
+      });
+    });
+  });
+});
