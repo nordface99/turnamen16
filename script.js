@@ -18,15 +18,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const teams = Array.from(teamInputs.querySelectorAll("input")).map(input => input.value);
     teamForm.style.display = "none";
     bracketContainer.style.display = "block";
-    generateBracket(teams);
+    generateRound(teams, 1);
   });
 
-  function generateBracket(teams) {
+  function generateRound(teams, round) {
+    bracket.innerHTML = `<h3>Round ${round}</h3>`;
+    const nextRound = [];
+
     for (let i = 0; i < teams.length; i += 2) {
       const match = document.createElement("div");
       match.className = "match";
-      match.innerHTML = `<strong>${teams[i]}</strong> vs <strong>${teams[i+1]}</strong>`;
+
+      const team1 = document.createElement("span");
+      team1.textContent = teams[i];
+      team1.addEventListener("click", () => {
+        nextRound.push(teams[i]);
+        checkRoundCompletion();
+      });
+
+      const team2 = document.createElement("span");
+      team2.textContent = teams[i+1];
+      team2.addEventListener("click", () => {
+        nextRound.push(teams[i+1]);
+        checkRoundCompletion();
+      });
+
+      match.appendChild(team1);
+      match.appendChild(team2);
       bracket.appendChild(match);
+    }
+
+    function checkRoundCompletion() {
+      if (nextRound.length === teams.length / 2) {
+        if (nextRound.length === 1) {
+          bracket.innerHTML += `<h2>🏆 Pemenang: ${nextRound[0]}</h2>`;
+        } else {
+          generateRound(nextRound, round + 1);
+        }
+      }
     }
   }
 });
