@@ -11,13 +11,20 @@
   <form id="teamForm">
     <h2>Masukkan Nama Tim</h2>
     <div id="teamInputs"></div>
-    <button type="button" id="shuffleBtn">Shuffle</button>
-    <button type="submit">Confirm</button>
+    <div class="buttons">
+      <button type="button" id="shuffleBtn">Shuffle</button>
+      <button type="submit">Confirm</button>
+    </div>
   </form>
 
   <div id="bracketContainer" style="display:none;">
     <h2>Bracket Turnamen</h2>
-    <div id="bracket"></div>
+    <div id="bracket">
+      <div class="round" id="round1"><h3>Round 1</h3></div>
+      <div class="round" id="round2"><h3>Round 2</h3></div>
+      <div class="round" id="semifinal"><h3>Semi-Final</h3></div>
+      <div class="round" id="final"><h3>Final</h3></div>
+    </div>
   </div>
 
   <script src="script.js"></script>
