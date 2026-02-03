@@ -3,81 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>SanMar eFOOTBALL TOURNAMENT</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      padding: 20px;
-    }
-    h1, h2, h3 {
-      text-align: center;
-    }
-    #teamInputs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      max-width: 400px;
-      margin: 20px auto;
-    }
-    input[type="text"] {
-      padding: 8px;
-      font-size: 14px;
-    }
-    .buttons {
-      text-align: center;
-      margin-top: 10px;
-    }
-    button {
-      padding: 8px 16px;
-      margin: 5px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    #bracket {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 30px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-    }
-    .round {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-      min-width: 150px;
-      position: relative;
-    }
-    .match-box {
-      background: #fff;
-      border: 2px solid #007bff;
-      border-radius: 6px;
-      padding: 8px 12px;
-      text-align: center;
-      cursor: pointer;
-      width: 100px;
-      position: relative;
-    }
-    .match-box:hover {
-      background: #d0f0d0;
-    }
-    .placeholder {
-      color: #aaa;
-      border-color: #ccc;
-    }
-    .selected {
-      background-color: #a0e0a0;
-      font-weight: bold;
-    }
-    .line {
-      position: absolute;
-      width: 40px;
-      height: 2px;
-      background: #007bff;
-      top: 50%;
-      left: 100px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="jquery.bracket.min.css">
 </head>
 <body>
   <h1>SanMar eFOOTBALL TOURNAMENT</h1>
@@ -93,77 +20,12 @@
 
   <div id="bracketContainer" style="display:none;">
     <h2>Bracket Turnamen</h2>
-    <div id="bracket">
-      <div class="round" id="round1"><h3>Round 1</h3></div>
-      <div class="round" id="round2"><h3>Round 2</h3></div>
-      <div class="round" id="semifinal"><h3>Semi-Final</h3></div>
-      <div class="round" id="final"><h3>Final</h3></div>
-    </div>
+    <div id="bracket"></div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const teamForm = document.getElementById("teamForm");
-      const teamInputs = document.getElementById("teamInputs");
-      const shuffleBtn = document.getElementById("shuffleBtn");
-      const bracketContainer = document.getElementById("bracketContainer");
-
-      for (let i = 0; i < 16; i++) {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = `Tim ${i + 1}`;
-        input.required = true;
-        teamInputs.appendChild(input);
-      }
-
-      shuffleBtn.addEventListener("click", () => {
-        const inputs = Array.from(teamInputs.querySelectorAll("input"));
-        const values = inputs.map(input => input.value);
-        const shuffled = values.sort(() => Math.random() - 0.5);
-        inputs.forEach((input, i) => input.value = shuffled[i]);
-      });
-
-      teamForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const teams = Array.from(teamInputs.querySelectorAll("input")).map(input => input.value);
-        teamForm.style.display = "none";
-        bracketContainer.style.display = "block";
-        createBracket(teams);
-      });
-
-      function createBracket(teams) {
-        const rounds = [teams];
-        for (let i = 1; i <= 3; i++) {
-          rounds.push(Array(rounds[i - 1].length / 2).fill("?"));
-        }
-
-        renderRound(rounds[0], "round1", 0, rounds);
-        renderRound(rounds[1], "round2", 1, rounds);
-        renderRound(rounds[2], "semifinal", 2, rounds);
-        renderRound(rounds[3], "final", 3, rounds);
-      }
-
-      function renderRound(teams, containerId, roundIndex, rounds) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = `<h3>${container.querySelector("h3").textContent}</h3>`;
-        for (let i = 0; i < teams.length; i++) {
-          const box = document.createElement("div");
-          box.className = "match-box";
-          box.textContent = teams[i];
-          if (teams[i] === "?") box.classList.add("placeholder");
-          box.addEventListener("click", () => {
-            if (teams[i] === "?") return;
-            rounds[roundIndex + 1][Math.floor(i / 2)] = teams[i];
-            renderRound(rounds[roundIndex + 1], ["round2", "semifinal", "final"][roundIndex], roundIndex + 1, rounds);
-            if (roundIndex === 2) {
-              const final = document.getElementById("final");
-              final.innerHTML += `<h2>🏆 Pemenang: ${teams[i]}</h2>`;
-            }
-          });
-          container.appendChild(box);
-        }
-      }
-    });
-  </script>
+  <!-- jQuery + jQuery Bracket -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="jquery.bracket.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
